@@ -44,27 +44,34 @@ namespace CoreServerTest
         {
             //var client = clientTask.Result;
             Console.WriteLine(
-                $"New client connected ({DateTime.Now.ToString(CultureInfo.CurrentCulture)}). Waiting for data...");
+                $"New client connected ({client.Client.RemoteEndPoint} ({client.Client.ProtocolType}) - {DateTime.Now.ToString(CultureInfo.CurrentCulture)}). Waiting for data...");
             var message = "";
 
             var data = Encoding.ASCII.GetBytes(
-                $"Connected to server: {Listener.LocalEndpoint.AddressFamily.ToString()}\n");
+                $"Connected to server: {client}\n");
             client.GetStream().Write(data, 0, data.Length);
 
-            while (!message.StartsWith("quit"))
+            while (!message.Equals("quit", StringComparison.OrdinalIgnoreCase))
             {
                 data = Encoding.ASCII.GetBytes("Send next data ('quit' to terminate connection): ");
                 client.GetStream().Write(data, 0, data.Length);
 
                 var buffer = new byte[client.ReceiveBufferSize];
-                client.GetStream().Read(buffer, 0, client.ReceiveBufferSize);
+
+                try
+                {
+                    client.GetStream().Read(buffer, 0, client.ReceiveBufferSize);
+                }
+                catch
+                {
+                    break;
+                }
 
                 message = Encoding.ASCII.GetString(buffer);
                 message = message.TrimEnd('\0').TrimEnd('\n');
-                Console.WriteLine(message);
+                Console.WriteLine($"{client.Client.RemoteEndPoint}: {message}");
             }
-            Console.WriteLine("Closing connection.");
-            client.GetStream().Dispose();
+            Console.WriteLine($"Closing connection of {client.Client.RemoteEndPoint}");
             client.Dispose();
         }
     }
