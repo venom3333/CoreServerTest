@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -31,25 +32,23 @@ namespace CoreServerTest
             {
                 Console.WriteLine("Waiting for client...");
 
-                using (var clientTask = Listener.AcceptTcpClientAsync())
-                {
+                var clientTask = Listener.AcceptTcpClientAsync();
 
-                    // var clientTask = Listener.AcceptTcpClientAsync(); // Get the client  
+                if (clientTask.Result == null) continue;
 
-                    if (clientTask.Result == null) continue;
-
-                    new Task(delegate { WorkWithClient(clientTask.Result); }).Start();
-                }
+                new Task(delegate { WorkWithClient(clientTask.Result); }).Start();
             }
         }
 
-        public static void WorkWithClient(TcpClient client)
+        private static void WorkWithClient(TcpClient client)
         {
             //var client = clientTask.Result;
-            Console.WriteLine($"New client connected ({DateTime.Now.ToString()}). Waiting for data...");
+            Console.WriteLine(
+                $"New client connected ({DateTime.Now.ToString(CultureInfo.CurrentCulture)}). Waiting for data...");
             var message = "";
 
-            var data = Encoding.ASCII.GetBytes($"Connected to server: {Listener.LocalEndpoint.AddressFamily.ToString()}\n");
+            var data = Encoding.ASCII.GetBytes(
+                $"Connected to server: {Listener.LocalEndpoint.AddressFamily.ToString()}\n");
             client.GetStream().Write(data, 0, data.Length);
 
             while (!message.StartsWith("quit"))

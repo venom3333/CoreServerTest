@@ -5,12 +5,13 @@ namespace CoreServerTest
     {
         private static void Main(string[] args)
         {
+            var port = 5678;
             if (args.Length > 0)
             {
-                // Do something
+                port = int.TryParse(args[0], out var parse)? parse : port;
             }
             // Start the server  
-            TcpHelper.StartServer(5678);
+            TcpHelper.StartServer(port);
             TcpHelper.Listen(); // Start listening.  
         }
     }
