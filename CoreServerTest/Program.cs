@@ -11,8 +11,8 @@ namespace CoreServerTest
                 port = int.TryParse(args[0], out var parse)? parse : port;
             }
             // Start the server  
-            TcpHelper.StartServer(port);
-            TcpHelper.Listen(); // Start listening.  
+            TcpServerBase.StartServer(port);
+            TcpServerBase.Listen(); // Start listening.  
         }
     }
 }

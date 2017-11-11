@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CoreServerTest
 {
-    internal static class TcpHelper
+    internal static class TcpServerBase
     {
         private static TcpListener Listener { get; set; }
         private static bool Accept { get; set; }
