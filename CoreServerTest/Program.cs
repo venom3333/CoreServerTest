@@ -1,11 +1,14 @@
-﻿using System;
-
+﻿
 namespace CoreServerTest
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
+            if (args.Length > 0)
+            {
+                // Do something
+            }
             // Start the server  
             TcpHelper.StartServer(5678);
             TcpHelper.Listen(); // Start listening.  
